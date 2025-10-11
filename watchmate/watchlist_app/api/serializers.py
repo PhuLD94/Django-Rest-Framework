@@ -2,18 +2,22 @@ from rest_framework import serializers
 from watchlist_app.models import WatchList, StreamPlatform, Review
 
 class ReviewSerializer(serializers.ModelSerializer):
+    review_user = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = Review
-        fields = '__all__'
-
+        # fields = '__all__'
+        exclude = ['watchlist']
 class WatchListSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     len_name = serializers.SerializerMethodField()
+    platform_name = serializers.CharField(source='platform.name', read_only=True)
+    platform = serializers.PrimaryKeyRelatedField(queryset=StreamPlatform.objects.all())
+
     class Meta:
         model = WatchList
         fields = '__all__'
         # fields = ['id', 'name', 'description']
-        # exclude = ['active']
+        # exclude = ['platform']
 
     def get_len_name(self, object): #Create a new field in api called len_name
         return len(object.title)
