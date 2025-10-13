@@ -2,7 +2,7 @@ from rest_framework import serializers
 from watchlist_app.models import WatchList, StreamPlatform, Review
 
 class ReviewSerializer(serializers.ModelSerializer):
-    review_user = serializers.StringRelatedField(read_only=True)
+    # review_user = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = Review
         # fields = '__all__'
@@ -10,8 +10,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class WatchListSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     len_name = serializers.SerializerMethodField()
-    platform_name = serializers.CharField(source='platform.name', read_only=True)
-    platform = serializers.PrimaryKeyRelatedField(queryset=StreamPlatform.objects.all())
+    platform = serializers.CharField(source='platform.name', read_only=True)
 
     class Meta:
         model = WatchList
